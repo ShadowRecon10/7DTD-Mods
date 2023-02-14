@@ -1,9 +1,9 @@
-﻿using GUI_2;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+//	Terms of Use: You can use this file as you want as long as this line and the credit lines are not removed or changed other than adding to them!
+//	Credits: The Fun Pimps.
+//	Tweaked: Laydor
+
+//	Changes the SkillWindowGroup XUiController to use the SMX SkillEntry and SkillSubEntry XUiControllers. Also replaces the CategoryList with SkillCategoryList
 
 namespace SMXcore
 {
@@ -12,7 +12,7 @@ namespace SMXcore
 
         private XUiC_SkillList skillList;
 
-        private XUiC_CategoryList categoryList;
+        private XUiC_SkillCategoryList categoryList;
 
         private XUiC_SkillAttributeInfoWindow skillAttributeInfoWindow;
 
@@ -44,35 +44,33 @@ namespace SMXcore
             skillSkillInfoWindow = GetChildByType<XUiC_SkillSkillInfoWindow>();
             skillPerkInfoWindow = GetChildByType<XUiC_SkillPerkInfoWindow>();
             skillBookInfoWindow = GetChildByType<XUiC_SkillBookInfoWindow>();
-            XUiC_SkillEntry[] skillEntries = GetChildrenByType<XUiC_SkillEntry>();
-            foreach(XUiC_SkillEntry entry in skillEntries)
+            XUiC_SkillSubEntry[] skillEntries = GetChildrenByType<XUiC_SkillSubEntry>();
+            foreach(XUiC_SkillSubEntry entry in skillEntries)
             {
                 entry.OnPress += XUiC_SkillEntry_OnPress;
             }
 
-            categoryList = GetChildByType<XUiC_CategoryList>();
+            categoryList = GetChildByType<XUiC_SkillCategoryList>();
             if (categoryList != null)
             {
-                categoryList.SetupCategoriesByWorkstation("skills");
+                categoryList.SetupSkillCategories();
                 categoryList.CategoryChanged += CategoryList_CategoryChanged;
                 categoryList.CategoryClickChanged += CategoryList_CategoryClickChanged;
             }
         }
 
-        private void CategoryList_CategoryChanged(XUiC_CategoryEntry _categoryEntry)
+        private void CategoryList_CategoryChanged(XUiC_SkillCategoryEntry _categoryEntry)
         {
             skillList.Category = _categoryEntry.CategoryName;
             skillList.RefreshSkillList();
-            skillList.SelectFirstEntry();
             IsDirty = true;
         }
 
-        private void CategoryList_CategoryClickChanged(XUiC_CategoryEntry _categoryEntry)
+        private void CategoryList_CategoryClickChanged(XUiC_SkillCategoryEntry _categoryEntry)
         {
             skillList.Category = _categoryEntry.CategoryName;
             skillList.SetFilterText("");
             skillList.RefreshSkillList();
-            skillList.SelectFirstEntry();
             IsDirty = true;
         }
 
@@ -95,7 +93,7 @@ namespace SMXcore
                 return;
             }
 
-            CurrentSkill = base.xui.selectedSkill;
+            CurrentSkill = xui.selectedSkill;
             skillAttributeInfoWindow.SkillChanged();
             skillSkillInfoWindow.IsDirty = true;
             skillPerkInfoWindow.SkillChanged();
@@ -137,7 +135,6 @@ namespace SMXcore
 
             skillList.Category = categoryList.CurrentCategory.CategoryName;
             skillList.RefreshSkillList();
-            skillList.SelectFirstEntry();
             IsDirty = true;
         }
     }
